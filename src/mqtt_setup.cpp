@@ -5,11 +5,9 @@
 #define STATUS_ON "ON"
 #define STATUS_OFF "OFF"
 
-#define MQTT_SERVER "192.168.2.103"
 #define LWT_TOPIC "devices/{DEVICE_ID}/LWT"
 #define LWT_INTERVAL 30000
-#define MQTT_USER "admin"
-#define MQTT_PASS "admin"
+
 
 
 void mqtt_tick()
@@ -73,7 +71,7 @@ void MQTTSetup::_reconnect() {
     String lwtTopic(LWT_TOPIC);
     lwtTopic.replace("{DEVICE_ID}", this->_clientId);
     if (pubSubClient.connect(this->_clientId.c_str(), 
-                MQTT_USER, MQTT_PASS, 
+                this->_username.c_str(), this->_password.c_str(), 
                 lwtTopic.c_str(),
                 1, true, STATUS_OFF)) {
 
@@ -92,22 +90,26 @@ void MQTTSetup::_reconnect() {
   }
 }
 
-void MQTTSetup::init(const String deviceId)
+void MQTTSetup::init(const String clientId, const String host, const String username, const String password)
 {
-  this->_clientId = deviceId;
+  this->_clientId = clientId;
+  this->_host = host;
+  this->_username = username;
+  this->_password = password;
+
 
   using std::placeholders::_1;
   using std::placeholders::_2;
   using std::placeholders::_3;
 
-  IPAddress ip;
-  ip.fromString(MQTT_SERVER);
+  // IPAddress ip;
+  // ip.fromString(MQTT_SERVER);
 
 
   Serial1.println("Init MQTT client...");
   pubSubClient.setBufferSize(512);
   pubSubClient.setClient(wifiClient);
-  pubSubClient.setServer(ip, 1883);
+  pubSubClient.setServer(this->_host.c_str(), 1883);
   pubSubClient.setKeepAlive(5);
   pubSubClient.setCallback(std::bind(&MQTTSetup::_messageHandler, this, _1, _2, _3));
 

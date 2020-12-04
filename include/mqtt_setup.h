@@ -12,6 +12,10 @@ typedef std::map<std::string, MESSAGE_CALLBACK_SIGNATURE> callback_map;
 
 class MQTTSetup {
 private:
+  String _host;
+  String _username;
+  String _password;
+
   String  _clientId;
   WiFiClient wifiClient;
   PubSubClient pubSubClient;
@@ -26,7 +30,7 @@ public:
   MQTTSetup();
   ~MQTTSetup();
 
-  void init(const String deviceId);
+  void init(const String clientId, const String host, const String username, const String password);
   void connectAndReceive();
   MESSAGE_CALLBACK_SIGNATURE registerCallback(std::string topic, MESSAGE_CALLBACK_SIGNATURE);
   MESSAGE_CALLBACK_SIGNATURE unregisterCallbac(std::string topic);

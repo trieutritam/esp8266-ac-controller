@@ -1,3 +1,6 @@
+#ifndef __IRAC_SETUP__
+#define __IRAC_SETUP__
+
 #include <map>
 #include <IRrecv.h>
 #include <IRremoteESP8266.h>
@@ -49,3 +52,5 @@ public:
   void setFanSpeed(int fanMode);
   void sendAc();
 };
+
+#endif
