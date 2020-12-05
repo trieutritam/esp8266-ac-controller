@@ -1,14 +1,19 @@
 #include <Arduino.h>
 #include <assert.h>
 
+#include <ESP8266mDNS.h>
+
+
+#include "config_setup.h"
 #include "wifi_setup.h"
 #include "mqtt_setup.h"
 #include "irac_message_handler.h"
 
-#define MQTT_SERVER "192.168.2.103"
-#define MQTT_USER "admin"
-#define MQTT_PASS "admin"
+// #define MQTT_SERVER "192.168.2.103"
+// #define MQTT_USER "admin"
+// #define MQTT_PASS "admin"
 
+StaticJsonDocument<512> configDoc;
 
 MQTTSetup mqtt;
 
@@ -22,13 +27,22 @@ void setup()
   }
 
   Serial.println("\n");
-  Serial.println("Starting...." + deviceId);
+  Serial.println("Starting.... Device Id:" + deviceId + " - " + String(ESP.getFlashChipId(), HEX));
 
-  initWifi();
+  initFS();
 
-  mqtt.init(deviceId, MQTT_SERVER, MQTT_USER, MQTT_PASS);
+  loadConfigFile(configDoc);
 
-  irAcInit(USE_AC_SHARP);
+  initWifi(deviceId.c_str());
+
+  if (!MDNS.begin("esp8266")) {
+    Serial.println("Error setting up MDNS responder!");
+  }
+  Serial.println("mDNS responder started");
+
+  mqtt.init(deviceId, configDoc["mqtt"]["host"], configDoc["mqtt"]["user"], configDoc["mqtt"]["pass"]);
+
+  irAcInit(configDoc["ac_type"]);
 
   String dataTopic = "devices/" + deviceId + "/data";
   mqtt.registerCallback(dataTopic.c_str(), &irAcMQTTMessageHandler);
@@ -44,6 +58,8 @@ void loop()
   {
     mqtt.connectAndReceive();
   }
+
+  MDNS.update();
 
   // Serial.println("Send ....");
   // irAcSetup.sendAc();

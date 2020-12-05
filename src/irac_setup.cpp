@@ -45,18 +45,21 @@ void IRACSetup::init(const uint8_t acType)
   switch (acType)
   {
   case USE_AC_SHARP:
+    Serial.println("Init AC Sharp Controller");
     this->_pIrAc = new IrAcSharp(kIrLed);
     break;
   case USE_AC_PANASONIC:
+    Serial.println("Init AC Panasonic Controller");
     this->_pIrAc = new IrAcPanasonic(kIrLed);
     break;
   case USE_AC_HITACHI:
+    Serial.println("Init AC Hitachi Controller");
     this->_pIrAc = new IrAcHitachi(kIrLed);
     break;
   default:
     break;
   }
-
+  
   this->_pIrAc->init();
 }
 

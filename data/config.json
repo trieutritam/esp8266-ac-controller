@@ -1,0 +1,8 @@
+{
+  "mqtt": {
+    "host": "192.168.2.100",
+    "user": "openhabian",
+    "pass": "openhabian"
+  },
+  "ac_type": 1
+}

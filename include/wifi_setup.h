@@ -12,7 +12,7 @@
 //for LED status
 #include <Ticker.h>
 
-void initWifi();
+void initWifi(const char* deviceId);
 
 
 #endif

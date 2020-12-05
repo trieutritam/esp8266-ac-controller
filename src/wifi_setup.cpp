@@ -22,7 +22,7 @@ void configModeCallback(WiFiManager *myWiFiManager)
   ticker.attach(0.2, tick);
 }
 
-void initWifi()
+void initWifi(const char* deviceId)
 {
   pinMode(LED_BUILTIN, OUTPUT);
   ticker.attach(0.6, tick);
@@ -38,9 +38,16 @@ void initWifi()
     delay(1000);
   }
 
+  Serial.print("Waiting.");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print('.');
+    delay(1000);
+  }
+
   //if you get here you have connected to the WiFi
-  Serial.printf("Wifi connected...IP: %s\n", WiFi.localIP().toString().c_str());
+  Serial.printf("\nWifi connected...IP: %s\n", WiFi.localIP().toString().c_str());
   ticker.detach();
+
   //keep LED on
   ticker.attach(1, tick);
 }

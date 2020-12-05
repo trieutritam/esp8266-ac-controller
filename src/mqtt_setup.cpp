@@ -6,7 +6,7 @@
 #define STATUS_OFF "OFF"
 
 #define LWT_TOPIC "devices/{DEVICE_ID}/LWT"
-#define LWT_INTERVAL 30000
+#define LWT_INTERVAL 10000
 
 
 
@@ -63,7 +63,7 @@ void MQTTSetup::_reconnect() {
   while (!pubSubClient.connected()) {
     pubSubClient.disconnect();
 
-    Serial.print("Attempting MQTT connection...");
+    Serial.printf("MQTT Attempting connect %s...\n", this->_host.c_str());
 
     // clientId += String(random(0xffff), HEX);
 
